@@ -1,0 +1,21 @@
+# Ignore build output
+build/
+CMakeFiles/
+CMakeCache.txt
+*.obj
+*.exe
+*.pdb
+*.ilk
+
+# VSCode settings
+.vscode/
+
+# Other temporary files
+*.log
+*.tmp
+*.cache
+# *.ppm
+
+# OS-specific files
+.DS_Store
+Thumbs.db
