@@ -14,6 +14,7 @@ int main(){
     camera cam;
     cam.image_width = 720;
     cam.aspact_ratio = 16.0 / 9.0;
+    cam.samples_per_pixel = 100;
 
     cam.render(world);
 
