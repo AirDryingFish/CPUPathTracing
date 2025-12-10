@@ -3,6 +3,7 @@
 #include "hittable_list.h"
 #include "sphere.h"
 #include "camera.h"
+#include "material.h"
 
 int main(){
 
@@ -15,6 +16,7 @@ int main(){
     cam.image_width = 720;
     cam.aspact_ratio = 16.0 / 9.0;
     cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
 
     cam.render(world);
 
