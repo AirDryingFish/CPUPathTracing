@@ -3,7 +3,7 @@
 
 #include "ray.h"
 
-class materail;
+class material;
 
 class hit_record {
 public:

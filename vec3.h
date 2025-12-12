@@ -50,6 +50,13 @@ public:
         return std::sqrt(length_squared());
     }
 
+    bool near_zero() const {
+        auto threshold = 1e-8;
+        return (std::fabs(e[0]) < threshold) && 
+               (std::fabs(e[1]) < threshold) && 
+               (std::fabs(e[2]) < threshold);
+    }
+
 };
 
 // Make an alias for vec3 as point3
@@ -115,6 +122,17 @@ inline vec3 random_on_hemisphere(const vec3& normal) {
     } else {
         return -on_unit_sphere;
     }
+}
+
+inline vec3 reflect(const vec3& v, const vec3& normal) {
+    return v - 2 * normal * dot(v, normal);
+}
+
+inline vec3 refract(const vec3& v_normalized, const vec3& normal, double eta_ratio) {
+    double cos_theta = fmin(dot(-v_normalized, normal), 1.0);
+    vec3 r_out_perp = eta_ratio * (v_normalized + cos_theta * normal);
+    vec3 r_out_parallel = -std::sqrt(1.0 - r_out_perp.length_squared()) * normal;
+    return r_out_perp + r_out_parallel;
 }
 
 #endif
