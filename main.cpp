@@ -21,17 +21,19 @@ int main(){
 
             if ((center - point3(4, 0.2, 0)).length() > 0.9) {
                 shared_ptr<material> shared_material;
-                
                 if (choose_mat < 0.8) {
+
                     auto albedo = color::random() * color::random();
                     shared_material = make_shared<lambertian>(albedo);
-                    world.add(make_shared<sphere>(center, 0.2, shared_material));
+                    auto center2 = center + vec3(0, random_double(0,.5), 0);
+                    world.add(make_shared<sphere>(center, center2, 0.2, shared_material));
                 }
                 else if (choose_mat < 0.95) {
                     auto albedo = color::random(0.5, 1.0);
                     auto fuzz = random_double(0, 0.5);
                     shared_material = make_shared<metal>(albedo, fuzz);
-                    world.add(make_shared<sphere>(center, 0.2, shared_material));
+                    auto center2 = center + vec3(0, random_double(0,.5), 0);
+                    world.add(make_shared<sphere>(center, center2, 0.2, shared_material));
                 }
                 else {
                     shared_material = make_shared<dielectric>(1.5);
@@ -60,9 +62,9 @@ int main(){
     
 
     camera cam;
-    cam.image_width = 1200;
+    cam.image_width = 400;
     cam.aspact_ratio = 16.0 / 9.0;
-    cam.samples_per_pixel = 500;
+    cam.samples_per_pixel = 100;
     cam.max_depth = 50;
 
     cam.vfov = 20;
