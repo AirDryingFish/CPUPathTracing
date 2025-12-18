@@ -21,6 +21,10 @@ public:
         return min < x && x < max;
     }
 
+    interval expand(double delta) const {
+        return interval(min - delta,  max + delta);
+    }
+
     double clamp(double x) const {
         if (x < min) {
             return min;
