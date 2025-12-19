@@ -4,12 +4,12 @@
 #include "sphere.h"
 #include "camera.h"
 #include "material.h"
-
+#include "bvh.h"
 
 int main(){
 
-    // World Objs
-    hittable_list world;
+    // World Objshittable_list
+     world;
 
     auto material_ground = make_shared<lambertian>(color(0.5, 0.5, 0.5));
     world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, material_ground));
@@ -60,12 +60,12 @@ int main(){
     // world.add(make_shared<sphere>(point3(-1.0, 0, -1.0), 0.5, material_left_sphere));
     // world.add(make_shared<sphere>(point3(-1.0, 0, -1.0), 0.4, material_left_sphere_insidebubble));
     // world.add(make_shared<sphere>(point3(1.0, 0, -1.0), 0.5, material_right_sphere));
-    
+    world = hittable_list(make_shared<bvh_node>(world));
 
     camera cam;
-    cam.image_width = 400;
+    cam.image_width = 1200;
     cam.aspact_ratio = 16.0 / 9.0;
-    cam.samples_per_pixel = 100;
+    cam.samples_per_pixel = 500;
     cam.max_depth = 50;
 
     cam.vfov = 20;

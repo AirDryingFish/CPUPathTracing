@@ -14,6 +14,12 @@ public:
         z = (a.z() < b.z()) ? interval(a.z(), b.z()) : interval(b.z(), a.z()); 
     }
 
+    aabb(aabb const& box1, aabb const& box2) {
+        x = interval(box1.x, box2.x);
+        y = interval(box1.y, box2.y);
+        z = interval(box1.z, box2.z);
+    }
+
     const interval& axis_interval(int n) const {
         if (n == 0) return x;
         if (n == 1) return y;
@@ -53,6 +59,19 @@ public:
         }
         return true;
     }
+
+    int longest_axiz() const {
+        if (x.size() > y.size()) {
+            return x.size() > z.size() ? 0 : 2;
+        }
+        else {
+            return y.size() > z.size() ? 1 : 2;
+        }
+    }
+    static const aabb empty, universe;
 };
+
+const aabb aabb::empty = aabb(interval::empty, interval::empty, interval::empty);
+const aabb aabb::universe = aabb(interval::universe, interval::universe, interval::universe);
 
 #endif

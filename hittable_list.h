@@ -9,6 +9,8 @@ using std::make_shared;
 using std::shared_ptr;
 
 class hittable_list: public hittable {
+private:
+    aabb bbox;
 public:
     std::vector<shared_ptr<hittable>> objects;
     
@@ -17,6 +19,7 @@ public:
     
     void add(shared_ptr<hittable> object) {
         objects.push_back(object);
+        bbox = aabb(bbox, object->bounding_box());
     }
 
     void clear() {
@@ -36,6 +39,9 @@ public:
             }
         }
         return is_hit_anything;
+    }
+    aabb bounding_box() const override {
+        return bbox;
     }
 };
 
