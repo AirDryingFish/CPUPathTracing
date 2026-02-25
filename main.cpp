@@ -5,49 +5,53 @@
 #include "camera.h"
 #include "material.h"
 #include "bvh.h"
+#include "texture.h"
 
-int main(){
-
-    // World Objshittable_list
-     world;
-
-    auto material_ground = make_shared<lambertian>(color(0.5, 0.5, 0.5));
+void bouncing_spheres()
+{
+    // World Objs
+    hittable_list world;
+    auto checker_tex = make_shared<checker_texture>(0.2, color(0.8, 0.8, 0.8), color(0.6, 0.1, 0.8));
+    auto material_ground = make_shared<lambertian>(checker_tex);
     world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, material_ground));
 
-    for (int a = -11; a < 11; a++) {
-        for (int b = -11; b < 11; b++) {
+    for (int a = -11; a < 11; a++)
+    {
+        for (int b = -11; b < 11; b++)
+        {
             auto choose_mat = random_double();
             point3 center(a + 0.9 * random_double(), 0.2, b + 0.9 * random_double());
-            
 
-            if ((center - point3(4, 0.2, 0)).length() > 0.9) {
+            if ((center - point3(4, 0.2, 0)).length() > 0.9)
+            {
                 shared_ptr<material> shared_material;
-                if (choose_mat < 0.8) {
+                if (choose_mat < 0.8)
+                {
 
                     auto albedo = color::random() * color::random();
                     shared_material = make_shared<lambertian>(albedo);
-                    auto center2 = center + vec3(0, random_double(0,.5), 0);
+                    auto center2 = center + vec3(0, random_double(0, .5), 0);
                     world.add(make_shared<sphere>(center, center2, 0.2, shared_material));
                 }
-                else if (choose_mat < 0.95) {
+                else if (choose_mat < 0.95)
+                {
                     auto albedo = color::random(0.5, 1.0);
                     auto fuzz = random_double(0, 0.5);
                     shared_material = make_shared<metal>(albedo, fuzz);
-                    auto center2 = center + vec3(0, random_double(0,.5), 0);
+                    auto center2 = center + vec3(0, random_double(0, .5), 0);
                     world.add(make_shared<sphere>(center, center2, 0.2, shared_material));
                 }
-                else {
+                else
+                {
                     shared_material = make_shared<dielectric>(1.5);
                     world.add(make_shared<sphere>(center, 0.2, shared_material));
                 }
-
             }
         }
     }
 
     auto material1 = make_shared<lambertian>(color(0.1, 0.2, 0.5));
     world.add(make_shared<sphere>(point3(-4.0, 1.0, 0), 1.0, material1));
-
 
     auto material2 = make_shared<dielectric>(1.50);
     auto material2insidebubble = make_shared<dielectric>(1.00 / 1.50);
@@ -65,7 +69,7 @@ int main(){
     camera cam;
     cam.image_width = 1200;
     cam.aspact_ratio = 16.0 / 9.0;
-    cam.samples_per_pixel = 500;
+    cam.samples_per_pixel = 250;
     cam.max_depth = 50;
 
     cam.vfov = 20;
@@ -76,7 +80,35 @@ int main(){
     cam.defocus_angle = 0.6;
     cam.focus_distance = 10;
 
+    cam.render(world);
+}
+
+void checkered_spheres()
+{
+    hittable_list world;
+
+    auto checker1_tex = make_shared<checker_texture>(1.0, color(0.2, 0.3, 0.1), color(0.9, 0.9, 0.9));
+    auto checker2_tex = make_shared<checker_texture>(0.2, color(0.8, 0.8, 0.8), color(0.6, 0.1, 0.8));
+    world.add(make_shared<sphere>(point3(0, -10, 0), 10, make_shared<lambertian>(checker1_tex)));
+    world.add(make_shared<sphere>(point3(0, 10, 0), 10, make_shared<lambertian>(checker2_tex)));
+
+    camera cam;
+    cam.aspact_ratio = 16.0 / 9.0;
+    cam.image_width = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
+
+    cam.vfov = 20;
+    cam.look_from = point3(13, 2, 3);
+    cam.look_at = point3(0, 0, 0);
+    cam.vup = vec3(0, 1, 0);
+
+    cam.defocus_angle = 0.0;
 
     cam.render(world);
+}
 
+int main()
+{
+    checkered_spheres();
 }
