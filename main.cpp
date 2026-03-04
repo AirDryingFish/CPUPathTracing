@@ -108,7 +108,30 @@ void checkered_spheres()
     cam.render(world);
 }
 
+void draw_earth()
+{
+    auto earth_tex = make_shared<image_texture>("earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_tex);
+    auto globe = make_shared<sphere>(point3(0, 0, 0), 2, earth_surface);
+
+    camera cam;
+    cam.aspact_ratio = 16.0 / 9.0;
+    cam.image_width = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
+
+    cam.vfov = 20;
+    cam.look_from = point3(13, 2, 3);
+    cam.look_at = point3(0, 0, 0);
+    cam.vup = vec3(0, 1, 0);
+
+    cam.defocus_angle = 0.0;
+
+    cam.render(hittable_list(globe));
+}
+
 int main()
 {
-    checkered_spheres();
+    // checkered_spheres();
+    draw_earth();
 }
