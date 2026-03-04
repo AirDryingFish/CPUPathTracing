@@ -3,6 +3,7 @@
 
 #include "color.h"
 #include "rtw_stb_imge.h"
+#include "perlin.h"
 
 class texture
 {
@@ -81,6 +82,26 @@ public:
 
 private:
     rtw_image image;
+};
+
+class noise_texture : public texture
+{
+public:
+    noise_texture(float scale) : scale(scale) {}
+
+    virtual color value(double u, double v, const point3 &p) const
+    {
+        // return color(1, 1, 1) * noise.turb(p, 10);
+
+        // 1. scale * p.z()： 基本的正弦函数输入，用 p.z()（物体空间的 z 坐标）乘上一个缩放因子 scale，生成沿 z 方向的均匀条纹。
+        // 2. noise.turb(p, 10)： 计算点 p 的湍流值（前面讨论过的多频率噪声），深度 10 表示叠加 10 层八度。
+        // 3. 相位扰动： 把湍流乘以 10 并加到正弦的输入上 → 原本直线条纹的相位被不规则地偏移，条纹随空间起伏，看起来就像大理石中的纹理
+        return color(0.5, 0.5, 0.5) * (1 + std::sin(scale * p.z() + 10 * noise.turb(p, 7)));
+    }
+
+private:
+    perlin noise;
+    double scale;
 };
 
 #endif
