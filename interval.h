@@ -3,38 +3,49 @@
 
 #include "utils.h"
 
-class interval {
+class interval
+{
 public:
     double min, max;
     interval() : min(+infinity), max(-infinity) {}
     interval(double min, double max) : min(min), max(max) {}
 
-    interval(interval const& a, interval const& b) {
+    // 取两个interval的并集
+    interval(interval const &a, interval const &b)
+    {
         min = a.min < b.min ? a.min : b.min;
         max = a.max > b.max ? a.max : b.max;
     }
 
-    double size() const {
+    double size() const
+    {
         return max - min;
     }
 
-    bool contains(double x) const {
+    bool contains(double x) const
+    {
         return min <= x && x <= max;
     }
 
-    bool surrounds(double x) const {
+    bool surrounds(double x) const
+    {
         return min < x && x < max;
     }
 
-    interval expand(double delta) const {
-        return interval(min - delta,  max + delta);
+    // 以 delta 为半径扩展区间
+    interval expand(double delta) const
+    {
+        return interval(min - delta, max + delta);
     }
 
-    double clamp(double x) const {
-        if (x < min) {
+    double clamp(double x) const
+    {
+        if (x < min)
+        {
             return min;
         }
-        if (x > max) {
+        if (x > max)
+        {
             return max;
         }
         return x;
