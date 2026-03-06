@@ -12,6 +12,9 @@ public:
     int image_width = 720;
     int samples_per_pixel = 10;
     int max_depth = 10;
+
+    color background; // Scene background color
+
     double vfov = 90;
     vec3 vup = vec3(0, 1, 0);
     point3 look_from = point3(0, 0, 0);
@@ -125,21 +128,39 @@ private:
         }
 
         hit_record rec;
-        if (world.hit(r, interval(0.001, infinity), rec))
+
+        if (!world.hit(r, interval(0.001, infinity), rec))
         {
-            ray scattered;
-            color attenuation;
-            if (rec.mat->scatter(r, rec, attenuation, scattered))
-            {
-                return attenuation * ray_color(scattered, depth - 1, world);
-            }
-            return color(0, 0, 0);
+            return background;
         }
-        vec3 normalized_dirction = normalize(r.direction());
-        auto a = 0.5 * (normalized_dirction.y() + 1);
-        color white(1.0, 1.0, 1.0);
-        color light_blue(0.5, 0.7, 1.0);
-        return (1 - a) * white + a * light_blue;
+
+        ray scattered;
+        color attenuation;
+        color color_from_emission = rec.mat->emitted(rec.u, rec.v, rec.p);
+
+        if (!rec.mat->scatter(r, rec, attenuation, scattered))
+        {
+            return color_from_emission;
+        }
+
+        color color_from_scatter = attenuation * ray_color(scattered, depth - 1, world);
+        return color_from_emission + color_from_scatter;
+
+        // if (world.hit(r, interval(0.001, infinity), rec))
+        // {
+        //     ray scattered;
+        //     color attenuation;
+        //     if (rec.mat->scatter(r, rec, attenuation, scattered))
+        //     {
+        //         return attenuation * ray_color(scattered, depth - 1, world);
+        //     }
+        //     return color(0, 0, 0);
+        // }
+        // vec3 normalized_dirction = normalize(r.direction());
+        // auto a = 0.5 * (normalized_dirction.y() + 1);
+        // color white(1.0, 1.0, 1.0);
+        // color light_blue(0.5, 0.7, 1.0);
+        // return (1 - a) * white + a * light_blue;
     }
 };
 
