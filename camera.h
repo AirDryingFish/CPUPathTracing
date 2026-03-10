@@ -50,6 +50,10 @@ private:
     point3 camera_center;
     vec3 pixel_delta_u;
     vec3 pixel_delta_v;
+
+    int sqrt_spp;
+    double recip_sqrt_spp;
+
     double pixel_samples_scale;
     point3 pixel00_loc;
     vec3 u, v, w;
@@ -63,6 +67,9 @@ private:
         image_height = (image_height < 1) ? 1 : image_height; // ensure height at least 1
 
         pixel_samples_scale = 1.0 / samples_per_pixel;
+
+        sqrt_spp = int(std::sqrt(samples_per_pixel));
+        recip_sqrt_spp = 1.0 / sqrt_spp;
 
         // Camera
         // auto focal_length = 1.0;
@@ -98,15 +105,24 @@ private:
         defocus_disk_v = defocus_radius * v;
     }
 
-    ray get_ray(int i, int j) const
+    ray get_ray(int i, int j, int s_i, int s_j) const
     {
-        auto offset = sample_square();
+        // auto offset = sample_square();
+        auto offset = sample_square_stratified(s_i, s_j);
         auto pixel_sample = pixel00_loc + ((i + offset.x()) * pixel_delta_u) + ((j + offset.y()) * pixel_delta_v);
         // auto ray_origin = camera_center;
         auto ray_origin = defocus_angle <= 0 ? camera_center : defocus_disk_sample();
         auto ray_direction = pixel_sample - ray_origin;
         auto ray_time = random_double(); // time for motion blur
         return ray(ray_origin, ray_direction, ray_time);
+    }
+
+    vec3 sample_square_stratified(int s_i, int s_j) const
+    {
+        // px range: [-0.5, 0.5]
+        auto px = ((s_i + random_double()) * recip_sqrt_spp) - 0.5;
+        auto py = ((s_j + random_double()) * recip_sqrt_spp) - 0.5;
+        return vec3(px, py, 0);
     }
 
     vec3 sample_square() const
