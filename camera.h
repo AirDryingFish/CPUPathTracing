@@ -34,10 +34,18 @@ public:
             for (int i = 0; i < image_width; i++)
             {
                 color pixel_color = color(0, 0, 0);
-                for (int sample = 0; sample < samples_per_pixel; sample++)
+                // for (int sample = 0; sample < samples_per_pixel; sample++)
+                // {
+                //     ray r = get_ray(i, j);
+                //     pixel_color += ray_color(r, max_depth, world);
+                // }
+                for (int s_j = 0; s_j < sqrt_spp; s_j++)
                 {
-                    ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, max_depth, world);
+                    for (int s_i = 0; s_i < sqrt_spp; s_i++)
+                    {
+                        ray r = get_ray(i, j, s_i, s_j);
+                        pixel_color += ray_color(r, max_depth, world);
+                    }
                 }
                 write_color(std::cout, pixel_color * pixel_samples_scale);
             }

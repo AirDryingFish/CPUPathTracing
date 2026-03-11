@@ -255,7 +255,7 @@ void cornell_box()
 
     camera cam;
     cam.aspect_ratio = 1.0;
-    cam.image_width = 200;
+    cam.image_width = 600;
     cam.samples_per_pixel = 200;
     cam.max_depth = 50;
     cam.background = color(0, 0, 0);
@@ -407,7 +407,7 @@ int main()
 {
     // checkered_spheres();
     // draw_earth();
-    switch (9)
+    switch (7)
     {
     case 1:
         bouncing_spheres();
